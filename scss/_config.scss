@@ -1,0 +1,271 @@
+// Crossass Configuration
+//
+// Copyright (c) 2014 Whizark
+
+// The delimiter of configuration path
+// @private
+$x-config--delimiter: '.' !default;
+
+// The configuration storage
+// @private
+$x-config--attr: () !default;
+
+// The default configuration storage
+// @private
+$x-config--default: () !default;
+
+// Sets a value to a configuration path
+// @mixin x-config
+// @param $path    {String} The configuration path
+// @param $value   {*}      The value to set
+@mixin x-config($path, $value) {
+    $x-config: x-config($path, $value);
+}
+
+// Sets or gets a value to/from a configuration path
+// @function x-config
+// @param    $path    {String} The configuration path
+// @param    $value   {*|Null} The value to set
+// @return            {*}      The value of the configuration path
+@function x-config($path, $value: null) {
+    @if $value == null {
+        @if x-config--has($x-config--attr, $path) {
+            @return x-config--get($x-config--attr, $path);
+        } @else if x-config--has($x-config--default, $path) {
+            @return x-config--get($x-config--default, $path);
+        }
+
+        @warn 'The path "#{$path}" doesn\'t exist.';
+
+        @return null;
+    }
+
+    $x-config--attr: x-config--set($x-config--attr, $path, $value) !global;
+
+    @return $value;
+}
+
+// Sets a default value to a configuration path
+// @mixin x-config-default
+// @param $path            {String} The configuration path
+// @param $value           {*}      The default value to set
+@mixin x-config-default($path, $value) {
+    $x-config: x-config-default($path, $value);
+}
+
+// Sets or gets a default value to/from a configuration path
+// @function x-config-default
+// @param    $path            {String} The configuration path
+// @param    $value           {*|Null} The default value to set
+// @return                    {*}      The default value of the configuration path
+@function x-config-default($path, $value: null) {
+    @if $value == null {
+        @if not x-config--has($x-config--default, $path) {
+            @warn 'The path "#{$path}" doesn\'t exist.';
+
+            @return null;
+        }
+
+        @return x-config--get($x-config--default, $path);
+    }
+
+    $x-config--default: x-config--set($x-config--default, $path, $value) !global;
+
+    @return $value;
+}
+
+// Returns wether a configuration path exists
+// @function x-config-has
+// @param    $path  {String} The configuration path
+// @return          {Bool}   True if the configuration path has a value,
+//                           otherwise false
+@function x-config-has($path) {
+    @if x-config--has($x-config--attr, $path) or x-config--has($x-config--default, $path) {
+        @return true;
+    }
+
+    @return false;
+}
+
+// Returns wether a configuration path exists in a configuration storage
+// @function x-config--has
+// @private
+// @param    $config {String} The configuration storage
+// @param    $path   {String} The configuration path
+// @return           {Bool}   True if the configuration path has a value,
+//                            otherwise false
+@function x-config--has($config, $path) {
+    $keys: x-config-str--split($path, $x-config--delimiter);
+    $value: $config;
+
+    @each $key in $keys {
+        @if type-of($value) != 'map' or not map-has-key($value, $key) {
+            @return false;
+        }
+
+        $value: map-get($value, $key);
+    }
+
+    @return true;
+}
+
+// Gets a value from a configuration path in a configuration storage
+// @function x-config--get
+// @private
+// @param    $config {String} The configuration storage
+// @param    $path   {String} The configuration path
+// @return           {*}      The value of the configuration path
+@function x-config--get($config, $path) {
+    $keys: x-config-str--split($path, $x-config--delimiter);
+    $value: $config;
+
+    @each $key in $keys {
+        @if type-of($value) != 'map' or not map-has-key($value, $key) {
+            @warn 'The path "#{$path}" doesn\'t exist.';
+            @warn '#{$key}';
+
+            @return null;
+        }
+
+        $value: map-get($value, $key);
+    }
+
+    @return $value;
+}
+
+// Sets a value to a configuration path in a configuration storage
+// @function x-config--set
+// @private
+// @param    $config {String} The configuration storage
+// @param    $path   {String} The configuration path
+// @param    $value  {*|Null} The value to set
+// @return           {Map}    A new configuration storage
+@function x-config--set($config, $path, $value) {
+    $keys: x-config-str--split($path, $x-config--delimiter);
+    $length: length($keys);
+    $result: (nth($keys, $length): $value);
+
+    @for $i from 1 through $length - 1 {
+        $j: $length - $i;
+        $key: nth($keys, $j);
+
+        $_path: x-config-str--join(x-config-list--slice($keys, 1, $j), $x-config--delimiter);
+
+        @if x-config--has($config, $_path) {
+            $_value: x-config--get($config, $_path);
+
+            @if type-of($_value) == 'map' {
+                $result: x-config-map--merge(($key: $_value), ($key: $result));
+            } @else {
+                $result: ($key: $result);
+            }
+        } @else {
+            $result: ($key: $result);
+        }
+    }
+
+    $config: x-config-map--merge($config, $result);
+
+    @return $config;
+}
+
+// Splits a string by a delimiter
+// @function x-config-str--split
+// @private
+// @param    $string             {String} The string to split
+// @param    $delimiter          {String} The boundary string to split the string
+// @return                       {List}   The splitted list
+@function x-config-str--split($string, $delimiter: '') {
+    $result: ();
+    $length: str-length($string);
+
+    @if str-length($delimiter) == 0 {
+        @for $i from 1 through $length {
+            $result: append($result, str-slice($string, $i, $i));
+        }
+
+        @return $result;
+    }
+
+    $break: false;
+
+    @while not $break {
+        $index: str-index($string, $delimiter);
+
+        @if not $index or $index == 0 {
+            $break: true;
+        } @else {
+            $part: if($index != 1, str-slice($string, 1, $index - 1), '');
+            $result: append($result, $part);
+            $string: str-slice($string, $index + str-length($delimiter));
+        }
+    }
+
+    @return append($result, $string);
+}
+
+// Joins list elements with a string
+// @function x-config-str--join
+// @private
+// @param    $list              {List}   The list to join
+// @param    $glue              {String} The glue string to join list elements
+// @return                      {String} The joined string
+@function x-config-str--join($list, $glue: '') {
+    $result: '';
+
+    @if length($list) == 0 {
+        @return $result;
+    }
+
+    @for $i from 1 through length($list) - 1 {
+        $result: $result + nth($list, $i) + $glue;
+    }
+
+    $result: $result + nth($list, length($list));
+
+    @return $result;
+}
+
+// Extracts a slice of a list
+// @function x-config-map--merge
+// @private
+// @param    $list               {List}   The list to extract
+// @param    $start              {Number} The start index to extract
+// @param    $end                {Number} The end index to extract
+// @return                       {List}   The extracted list
+@function x-config-list--slice($list, $start: 1, $end: length($list)) {
+    $result: ();
+
+    @for $i from $start through $end {
+        $result: append($result, nth($list, $i));
+    }
+
+    @return $result;
+}
+
+// Recursively merges one or more maps
+// @function x-config-map--merge
+// @private
+// @param    $maps               {Map...} The map(s) to merge
+// @return                       {Map}    The merged map
+@function x-config-map--merge($maps...) {
+    $result: nth($maps, 1);
+
+    @for $i from 1 through length($maps) - 1 {
+        @each $key, $value in nth($maps, $i + 1) {
+            @if type-of($result) != 'map' {
+                $result: ($key: $value);
+            }
+
+            @if type-of($value) == 'map' {
+                $value: x-config-map--merge(map-get($result, $key), $value);
+            }
+
+            @if $key != null {
+                $result: map-merge($result, ($key: $value));
+            }
+        }
+    }
+
+    @return $result;
+}
