@@ -127,7 +127,7 @@ $include x-config('button.color.bg', blue);
 $var-fg: black !default;
 
 // x-config-default()
-@include x-config-default('x-config-bg', white);
+@include x-config-default('x-config-fg', black);
 ```
 
 ```scss
