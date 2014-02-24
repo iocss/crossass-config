@@ -33,13 +33,13 @@ or just copy ```crossass-config``` folder into your project.
 ### Import
 
 ```scss
-@import 'bower_components/crossass-config/scss/_config';
+@import 'bower_components/crossass-config/scss/config';
 ```
 
 or
 
 ```scss
-@import 'your-folder/crossass-config/scss/_config';
+@import 'your-folder/crossass-config/scss/config';
 ```
 
 ### Default configuration setting
@@ -60,7 +60,7 @@ or
 ```scss
 // your-project-file.scss
 
-@import 'bower_components/crossass-config/scss/_config';
+@import 'bower_components/crossass-config/scss/config';
 @import 'your-partial-file';
 
 body {
@@ -74,7 +74,7 @@ body {
 ```scss
 // your-project-file.scss
 
-@import 'bower_components/crossass-config/scss/_config';
+@import 'bower_components/crossass-config/scss/config';
 @import 'your-partial-file';
 
 // Overriding default configuration
@@ -89,7 +89,7 @@ body {
 ### Map vs x-config()
 
 ```scss
-@import 'bower_components/crossass-config/scss/_config';
+@import 'bower_components/crossass-config/scss/config';
 
 // Map
 $config: (
@@ -145,7 +145,7 @@ $var-bg: black !default;
 ```scss
 // your-project-file.scss
 
-@import 'bower_components/crossass-config/scss/_config';
+@import 'bower_components/crossass-config/scss/config';
 @import 'your-partial-file-1';
 @import 'your-partial-file-2';
 
