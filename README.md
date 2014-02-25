@@ -86,6 +86,28 @@ body {
 }
 ```
 
+### Compatibility
+
+x-config() can be compatible with Sass variable.
+
+```scss
+// Variables
+$color-fg: black !default;
+$color-bg: white !default;
+$color: (
+    fg: $color-fg,
+    bg: $color-bg
+) !default;
+
+// x-config()
+@include x-config-default('color', $color);
+
+body {
+    color: x-config('color.fg');
+    background-color: x-config('color.bg');
+}
+```
+
 ### Map vs x-config()
 
 ```scss
