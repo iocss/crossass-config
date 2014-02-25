@@ -91,6 +91,8 @@ body {
 x-config() can be compatible with Sass variable.
 
 ```scss
+@import 'bower_components/crossass-config/scss/config';
+
 // Variables
 $color-fg: black !default;
 $color-bg: white !default;
@@ -99,12 +101,12 @@ $color: (
     bg: $color-bg
 ) !default;
 
-// x-config()
+// x-config-default()
 @include x-config-default('color', $color);
 
 body {
-    color: x-config('color.fg');
-    background-color: x-config('color.bg');
+    color: x-config('color.fg');  // black
+    background-color: x-config('color.bg');  // white
 }
 ```
 
