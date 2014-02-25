@@ -3,11 +3,22 @@
 A dot-syntax configuration (Map) library for Sass.
 
 ```scss
+// This is the same as:
+// (
+//     color: (
+//         fg: black
+//     )
+// )
 $include x-config('color.fg', black);
 
 body {
-    color: x-config('color.fg');
+    color: x-config('color.fg');  // black
 }
+// So you can also get the raw Map by the path.
+// x-config('color') returns:
+// (
+//     fg: black
+// )
 ```
 
 ## Features
