@@ -48,11 +48,13 @@ or
 // _your-partial-file.scss
 
 // Default configuration settings
-@include x-config-default('color.fg', black);
-@include x-config-default('color.bg', white);
+// Passing true to the 3rd parameter,
+// the value is assigned to the configuration path as the default
+@include x-config('color.fg', black, true);
+@include x-config('color.bg', white, true);
 
-// or assign values to configuration path by using Map
-// @include x-config-default('color', (fg: black, bg: white));
+// or assign values to a configuration path by using Map
+// @include x-config('color', (fg: black, bg: white), true);
 ```
 
 ### Getting configuration setting
@@ -101,8 +103,8 @@ $color: (
     bg: $color-bg
 ) !default;
 
-// x-config-default()
-@include x-config-default('color', $color);
+// x-config()
+@include x-config('color', $color, true);
 
 body {
     color: x-config('color.fg');  // black
@@ -142,7 +144,7 @@ $include x-config('button.color.bg', blue);
 }
 ```
 
-### !default vs x-config-default()
+### !default vs x-config()
 
 ```scss
 // _your-partial-file-1.scss
@@ -150,8 +152,8 @@ $include x-config('button.color.bg', blue);
 // Variable with !default
 $var-fg: black !default;
 
-// x-config-default()
-@include x-config-default('x-config-fg', black);
+// x-config()
+@include x-config('x-config-fg', black, true);
 ```
 
 ```scss
@@ -161,9 +163,9 @@ $var-fg: black !default;
 $var-fg: white !default;
 $var-bg: black !default;
 
-// x-config-default()
-@include x-config-default('x-config-fg', white);
-@include x-config-default('x-config-bg', black);
+// x-config()
+@include x-config('x-config-fg', white, true);
+@include x-config('x-config-bg', black, true);
 ```
 
 ```scss

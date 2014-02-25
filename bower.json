@@ -1,6 +1,6 @@
 {
     "name"       : "crossass-config",
-    "version"    : "0.9.0",
+    "version"    : "0.9.1",
     "description": "A dot-syntax configuration (Map) library for Sass.",
     "keywords"   : [
         "sass",
