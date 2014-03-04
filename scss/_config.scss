@@ -32,7 +32,11 @@ $x-config--default: () !default;
 @function x-config($path, $value: null, $default: false) {
     @if $value != null {
         @if $default {
-            $x-config--default: x-config-map--set($x-config--default, $path, $value) !global;
+            @if x-config-map--has($x-config--default, $path) {
+                $value: x-config-map--get($x-config--default, $path);
+            } @else {
+                $x-config--default: x-config-map--set($x-config--default, $path, $value) !global;
+            }
         } @else {
             $x-config--attr: x-config-map--set($x-config--attr, $path, $value) !global;
         }

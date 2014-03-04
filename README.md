@@ -25,7 +25,6 @@ body {
 
 * Dot-syntax configuration
 * Default configuration support
-* Straight-forward overriding
 
 ## Requirement
 
@@ -152,49 +151,5 @@ $include x-config('button.color.bg', blue);
 .x-config {
     color: x-config('button.color.fg');
     background-color: x-config('button.color.bg');
-}
-```
-
-### !default vs x-config()
-
-```scss
-// _your-partial-file-1.scss
-
-// Variable with !default
-$var-fg: black !default;
-
-// x-config()
-@include x-config('x-config-fg', black, true);
-```
-
-```scss
-// _your-partial-file-2.scss
-
-// Variables with !default
-$var-fg: white !default;
-$var-bg: black !default;
-
-// x-config()
-@include x-config('x-config-fg', white, true);
-@include x-config('x-config-bg', black, true);
-```
-
-```scss
-// your-project-file.scss
-
-@import 'bower_components/crossass-config/scss/config';
-@import 'your-partial-file-1';
-@import 'your-partial-file-2';
-
-// Variables
-.var-color {
-    color: $var-fg;  // black
-    background-color: $var-bg;  // black
-}
-
-// x-config()
-.x-config-color {
-    color: x-config('x-config-fg');  // white
-    background-color: x-config('x-config-bg');  // black
 }
 ```
