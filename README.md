@@ -9,13 +9,13 @@ A dot-syntax configuration (Map) library for Sass.
 //         fg: black
 //     )
 // )
-$include x-config('color.fg', black);
+$include x-config-set('color.fg', black);
 
 body {
-    color: x-config('color.fg');  // black
+    color: x-config-get('color.fg');  // black
 }
 // So you can also get the raw Map by the path.
-// x-config('color') returns:
+// x-config-get('color') returns:
 // (
 //     fg: black
 // )
@@ -60,11 +60,11 @@ or
 // Default configuration settings
 // Passing true to the 3rd parameter,
 // the value is assigned to the configuration path as the default
-@include x-config('color.fg', black, true);
-@include x-config('color.bg', white, true);
+@include x-config-set('color.fg', black, true);
+@include x-config-set('color.bg', white, true);
 
 // or assign values to a configuration path by using Map
-// @include x-config('color', (fg: black, bg: white), true);
+// @include x-config-set('color', (fg: black, bg: white), true);
 ```
 
 ### Getting configuration setting
@@ -76,8 +76,8 @@ or
 @import 'your-partial-file';
 
 body {
-    color: x-config('color.fg');  // black
-    background-color: x-config('color.bg');  // white
+    color: x-config-get('color.fg');  // black
+    background-color: x-config-get('color.bg');  // white
 }
 ```
 
@@ -90,17 +90,17 @@ body {
 @import 'your-partial-file';
 
 // Overriding default configuration
-@include x-config('color.fg', #666666);
+@include x-config-set('color.fg', #666666);
 
 body {
-    color: x-config('color.fg');  // #666666
-    background-color: x-config('color.bg');  // white
+    color: x-config-get('color.fg');  // #666666
+    background-color: x-config-get('color.bg');  // white
 }
 ```
 
 ### Compatibility
 
-x-config() can be compatible with Sass variable.
+x-config-get(), x-config-set() can be compatible with Sass variable.
 
 ```scss
 @import 'bower_components/crossass-config/scss/config';
@@ -113,16 +113,16 @@ $color: (
     bg: $color-bg
 ) !default;
 
-// x-config()
-@include x-config('color', $color, true);
+// x-config-set()
+@include x-config-set('color', $color, true);
 
 body {
-    color: x-config('color.fg');  // black
-    background-color: x-config('color.bg');  // white
+    color: x-config-get('color.fg');  // black
+    background-color: x-config-get('color.bg');  // white
 }
 ```
 
-### Map vs x-config()
+### Map vs x-config-get(), x-config-set()
 
 ```scss
 @import 'bower_components/crossass-config/scss/config';
@@ -137,9 +137,9 @@ $config: (
     )
 );
 
-// x-config()
-$include x-config('button.color.fg', white);
-$include x-config('button.color.bg', blue);
+// x-config-set()
+$include x-config-set('button.color.fg', white);
+$include x-config-set('button.color.bg', blue);
 
 // Map
 .map {
@@ -147,9 +147,9 @@ $include x-config('button.color.bg', blue);
     background-color: map-get( map-get( map-get( $config, 'button' ), 'color' ), 'bg' );
 }
 
-// x-config()
+// x-config-get()
 .x-config {
-    color: x-config('button.color.fg');
-    background-color: x-config('button.color.bg');
+    color: x-config-get('button.color.fg');
+    background-color: x-config-get('button.color.bg');
 }
 ```
