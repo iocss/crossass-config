@@ -19,31 +19,46 @@ $x-config--default: () !default;
 // @param $path    {String} The configuration path
 // @param $value   {*|Null} The value to set
 // @param $default {Bool}   Whether the configuration is default
+@mixin x-config-set($path, $value, $default: false) {
+    $x-config: x-config-set($path, $value, $default);
+}
+
+// Sets a value to a configuration path
+// @mixin      x-config
+// @param      $path    {String} The configuration path
+// @param      $value   {*|Null} The value to set
+// @param      $default {Bool}   Whether the configuration is default
+// @deprecated 0.9.3
 @mixin x-config($path, $value, $default: false) {
     $x-config: x-config($path, $value, $default);
 }
 
-// Sets or gets a value to/from a configuration path
+// Sets a value to/from a configuration path
 // @function x-config
 // @param    $path    {String} The configuration path
-// @param    $value   {*|Null} The value to set
+// @param    $value   {*}      The value to set
 // @param    $default {Bool}   Whether the configuration is default
 // @return            {*}      The value of the configuration path
-@function x-config($path, $value: null, $default: false) {
-    @if $value != null {
-        @if $default {
-            @if x-config-map--has($x-config--default, $path) {
-                $value: x-config-map--get($x-config--default, $path);
-            } @else {
-                $x-config--default: x-config-map--set($x-config--default, $path, $value) !global;
-            }
+@function x-config-set($path, $value, $default: false) {
+    @if $default {
+        @if x-config-map--has($x-config--default, $path) {
+            $value: x-config-map--get($x-config--default, $path);
         } @else {
-            $x-config--attr: x-config-map--set($x-config--attr, $path, $value) !global;
+            $x-config--default: x-config-map--set($x-config--default, $path, $value) !global;
         }
-
-        @return $value;
+    } @else {
+        $x-config--attr: x-config-map--set($x-config--attr, $path, $value) !global;
     }
 
+    @return $value;
+}
+
+// Gets a value to/from a configuration path
+// @function x-config
+// @param    $path    {String} The configuration path
+// @param    $default {Bool}   Whether the configuration is default
+// @return            {*}      The value of the configuration path
+@function x-config-get($path, $default: false) {
     @if $default {
         @if x-config-map--has($x-config--default, $path) {
             @return x-config-map--get($x-config--default, $path);
@@ -59,6 +74,21 @@ $x-config--default: () !default;
     @warn 'The path "#{$path}" doesn\'t exist.';
 
     @return null;
+}
+
+// Sets or gets a value to/from a configuration path
+// @function   x-config
+// @param      $path    {String} The configuration path
+// @param      $value   {*|Null} The value to set
+// @param      $default {Bool}   Whether the configuration is default
+// @return              {*}      The value of the configuration path
+// @deprecated 0.9.3
+@function x-config($path, $value: null, $default: false) {
+    @if $value != null {
+        @return x-config-set($path, $value, $default);
+    }
+
+    @return x-config-get($path, $default);
 }
 
 // Returns whether a configuration path exists
