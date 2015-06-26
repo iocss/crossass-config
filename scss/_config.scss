@@ -233,8 +233,10 @@ $x-config--default: () !default;
         @return $result;
     }
 
-    @for $i from 1 through length($list) - 1 {
-        $result: $result + nth($list, $i) + $glue;
+    @if length($list) > 1 {
+        @for $i from 1 through length($list) - 1 {
+            $result: $result + nth($list, $i) + $glue;
+        }
     }
 
     $result: $result + nth($list, length($list));
